@@ -4,6 +4,7 @@ var server    = require('http').Server(app);
 var io        = require('socket.io')(server);
 var apiHelper = require('./helpers/apiHelper');
 var User      = require('./objects/user');
+var helmet = require('helmet');
 //=========================================Require Dependencies
 
 var searchTerm;
@@ -15,6 +16,8 @@ app.set('host', process.env.OPENSHIFT_NODEJS_IP   || process.env.HOST || '192.16
 server.listen(app.get('port'), app.get('host'), function() {
    console.log("Express server running");
 });
+
+app.use(helmet.hidePoweredBy());
 
 app.get('/posters/:poster?', function(req, res, next) {
   res.sendfile('./posters/' + req.params.poster);
