@@ -11,7 +11,7 @@ var searchTerm;
 var users = [];
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 4444);
-app.set('host', process.env.OPENSHIFT_NODEJS_IP   || process.env.HOST || '192.168.2.57');
+app.set('host', process.env.OPENSHIFT_NODEJS_IP   || process.env.HOST || 'localhost');
 
 server.listen(app.get('port'), app.get('host'), function() {
    console.log("Express server running");
@@ -23,7 +23,7 @@ app.get('/posters/:poster?', function(req, res, next) {
   res.sendfile('./posters/' + req.params.poster);
 });
 
-app.get('/views/posterNotFound.jpg', function(req, res, next) {
+app.get('/views/images/posterNotFound.jpg', function(req, res, next) {
   res.sendfile('./views/posterNotFound.jpg');
 });
 
@@ -72,6 +72,12 @@ io.on('connection', function(socket) {
     updateUserInUsers(user);
     searchWith(user);
   });
+
+  socket.on("updateRating", function(data) {
+
+    // { newRating : clickedRating,
+    //                                   imdbId : movieId });
+  }
 });
 
 function findOrCreateUser(socket) {

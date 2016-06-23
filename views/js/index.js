@@ -33,6 +33,34 @@ ReactDOM.render(
   document.getElementById('searchTerm')
 );
 
+var MovieStarRating = React.createClass({
+  ratingClickHandler: function(e) {
+      if($(e.target).hasClass('glyphicon')) {
+        var clickedRating = $(e.target).attr('id');
+        var movieId = $(e.target).attr('movieId')
+        socket.emit("updateRating", { newRating : clickedRating,
+                                      imdbId : movieId });
+      }
+  },
+  render: function() {
+    var starNodes = [];
+    var numberOfEmptyStars = 5 - this.props.rating;
+
+    for(var i=0;i<5;i++) {
+      if(i < this.props.rating) {
+        starNodes.push(<span key={i} id={i+1} movieId={this.props.movieId} className="glyphicon glyphicon-star" aria-hidden="true"></span>);
+      } else {
+        starNodes.push(<span key={i} id={i+1} movieId={this.props.movieId} className="glyphicon glyphicon-star-empty" aria-hidden="true"></span>);
+      }
+    }
+    return (
+        <div className="row" onClick={this.ratingClickHandler}>
+          {starNodes}
+        </div>
+    );
+  }
+});
+
 var MovieResults = React.createClass({
   getInitialState: function() {
     return {movies : []};
@@ -42,9 +70,6 @@ var MovieResults = React.createClass({
   },
   updateResults: function(results) {
     this.setState({movies : results});
-  },
-  ratingClickHandler: function(e) {
-    
   },
   render: function() {
     var movieNodes = [];
@@ -64,7 +89,7 @@ var MovieResults = React.createClass({
       					</div>
       				</div>
       				<div className='col-xs-12 movieRating'>
-      					{movie.rating}
+      					<MovieStarRating rating={movie.rating} movieId={movie.imdbID}/>
       				</div>
       			</div>
       			<div className='col-xs-4 moviePoster'>

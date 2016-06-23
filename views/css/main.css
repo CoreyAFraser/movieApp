@@ -97,6 +97,12 @@ html, body {
 
 .movieRating {
 	height: 1em;
+	color: grey;
+}
+
+.movieRating .glyphicon-star{
+	height: 1em;
+	color: gold;
 }
 
 .moviePosterImg {
