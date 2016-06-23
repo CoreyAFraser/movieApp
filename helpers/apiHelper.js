@@ -1,26 +1,63 @@
 var request      = require('request');
-var MongoClient  = require('mongodb').MongoClient;
+var fs      	 = require('fs');
+//var MongoClient  = require('mongodb').MongoClient;
 var assert 		 = require('assert');
 var config 		 = require('../configs/config');
 var app			 = require('../app');
+var imageDownloader = require('./imageDownloader');
+
+var count = 0;
+var searchResults;
+var json;
+var poster;
+
+function ifDoneDownloadingImagesReturnResults(callback) {
+	count++;
+	if(count >= searchResults.length) {
+		count = -2;
+		json.Search = searchResults;
+		if(callback) {
+			console.log("Returning Results");
+			callback(json);
+		}
+	}
+}
 
 module.exports = {
-  search: function(searchTerm, page, callback) {
-  	var url = "http://www.omdbapi.com/?s=" + searchTerm + "&page=" + page;
+  search: function(user, callback) {
+  	count = 0;
+  	json = {};
+  	searchResults = [];
+  	poster = '';
+  	var url = "http://www.omdbapi.com/?s=" + user.searchTerm + "&page=" + user.selectedPage;
+  	
   	console.log("Calling " + url)
   	request(url, function(error, response, result){	
   		if(error) {
   			callback(error, response);
   		}
-  		var json = JSON.parse(result);
-  		var searchResults = json.Search;
+  		json = JSON.parse(result);
+  		searchResults = json.Search;
   		for(var movie in searchResults) {
   			searchResults[movie].rating = 0;
+  			poster = searchResults[movie].Poster;
+  			if(poster != 'N/A') {
+	  			poster = poster.substring(0, poster.length - 7) + ".jpg";
+	  			searchResults[movie].Poster = './posters/' + searchResults[movie].imdbID + ".jpg";
+	  			try {
+				    fs.accessSync(searchResults[movie].Poster, fs.F_OK);
+				    ifDoneDownloadingImagesReturnResults(callback);
+				} catch (e) {
+				    imageDownloader.downloadPoster(poster, searchResults[movie].Poster, function() {
+			  			ifDoneDownloadingImagesReturnResults(callback);
+			  		});
+				}	  			
+	  		} else {
+	  			searchResults[movie].Poster = './views/posterNotFound.jpg';
+	  			ifDoneDownloadingImagesReturnResults(callback);
+	  		}
   		}
-  		json.Search = searchResults;
-  		if(callback) {
-  		  callback(json);
-  		}
+  		
   // 		MongoClient.connect(config.mongoDb.url, function(err, db) {
 	 //      assert.equal(null, err);
 		//     console.log("Connected correctly to server to write to DB");

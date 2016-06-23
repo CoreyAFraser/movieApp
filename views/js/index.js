@@ -1,4 +1,13 @@
 var socket = io();
+var localSearchTerm;
+var page = 1;
+
+window.onpopstate = function(event) {
+  if(event.state) {
+  	page = event.state.page;
+  	socket.emit("updatePage", event.state.page);
+  }
+};
 
 var SearchTerm = React.createClass({
   getInitialState: function() {
@@ -8,6 +17,7 @@ var SearchTerm = React.createClass({
       socket.on('updateSearchTerm', this.updateSearchTerm);
   },
   updateSearchTerm: function(term) {
+  	localSearchTerm = term;
     this.setState({searchTerm : term});
   },
   render() {
@@ -58,6 +68,7 @@ var MovieResults = React.createClass({
       				</div>
       			</div>
       			<div className='col-xs-4 moviePoster'>
+      				<img className='moviePosterImg' src={movie.Poster} alt={movie.Title}/>
       			</div>
       		</div>
       	</div>);
@@ -77,6 +88,8 @@ ReactDOM.render(
 
 var Pagination = React.createClass({
 	getInitialState: function() {
+		var stateObj = { page : 1 };
+		history.pushState(stateObj, "page1", "");
     	return { numberOfPages : 0,
     			 currentPage : 0};
   	},
@@ -89,7 +102,21 @@ var Pagination = React.createClass({
   	},
   	pageClickHandler: function(e) {
   		if($(e.target).hasClass('pageLink')) {
-  			socket.emit("updatePage", $(e.target).attr('id'));
+  			var clickedPage = $(e.target).attr('id');
+  			if(clickedPage == 'Prev') {
+		      page--;
+		    } else {
+		      if(clickedPage == 'Next') {
+		        page++;
+		      } else {
+		        page = clickedPage;
+		      }
+		    }
+
+			var stateObj = { page : page };
+			history.pushState(stateObj, "page" + page, "");
+
+  			socket.emit("updatePage", page);
   		}
   	},
   	render: function() {

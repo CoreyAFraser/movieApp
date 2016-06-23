@@ -4,24 +4,24 @@ html, body {
 }
 
 #title {
-	height: 10%;
-	border: solid;
-	border-color: black;
+	height: 12%;
 }
+
 #subTitle {
-	height: 5%;
-	border: solid;
-	border-color: black;
+	padding-top: 3%;
+	height: 6%;
 }
+
 #results {
-	height: 80%;
-	border: solid;
-	border-color: black;
+	height: 79%;
+	border-top: solid;
+	border-color: #ddd;
+	padding-top: 1%;
 }
+
 #pagination {
-	min-height: 5%;
-	border: solid;
-	border-color: black;
+	min-height: 6%;
+	font-size: 1.2em;
 }
 
 .page-title {
@@ -38,8 +38,15 @@ html, body {
 	margin-bottom: 0;
 }
 
+.pagesLinks {
+	border-top: solid;
+	border-color: #ddd;
+	margin-top: 1%;
+}
+
 .pageLink {
 	text-align: center;
+	cursor: pointer
 }
 
 .disabled {
@@ -51,14 +58,18 @@ html, body {
 }
 
 .movieContainer {
-	height: 20%;
-	border: solid;
-	border-color: black;
+	height: 19%;
 	padding: 0;
+	margin: 1% 0;
 }
 
-.movieNode, .moviePoster, .movieInfo {
+.movieNode, .movieInfo {
 	height: 100%;
+}
+
+.moviePoster {
+	height: 100%;
+	padding: 10px 5px;
 }
 
 .movieInfo {
@@ -66,21 +77,29 @@ html, body {
 }
 
 .movieTitleYear {
-	height: 80%;
+	height: 75%;
 	padding: 0;
+	line-height: 1em;
 }
 
 .movieTitle {
-	min-height: 20%;
+	height: 2em;
 	line-height: 1em;
 	padding-right: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .movieYear {
-	height: 20%;
+	height: 1em;
 	padding-right: 0;
 }
 
 .movieRating {
-	height: 20%;
+	height: 1em;
+}
+
+.moviePosterImg {
+	max-height: 100%;
+	max-width: 100%;
 }

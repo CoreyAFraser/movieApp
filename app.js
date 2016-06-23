@@ -3,19 +3,27 @@ var app       = require('express')();
 var server    = require('http').Server(app);
 var io        = require('socket.io')(server);
 var apiHelper = require('./helpers/apiHelper');
+var User      = require('./objects/user');
 //=========================================Require Dependencies
 
 var searchTerm;
-var pages;
-var selectedPage;
-var searchResults;
+var users = [];
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 4444);
 app.set('host', process.env.OPENSHIFT_NODEJS_IP   || process.env.HOST || '192.168.2.57');
 
 server.listen(app.get('port'), app.get('host'), function() {
-  console.log("Express server running");
+   console.log("Express server running");
 });
+
+app.get('/posters/:poster?', function(req, res, next) {
+  res.sendfile('./posters/' + req.params.poster);
+});
+
+app.get('/views/posterNotFound.jpg', function(req, res, next) {
+  res.sendfile('./views/posterNotFound.jpg');
+});
+
 
 app.get('/index.js', function(req, res, next) {
   res.sendfile('./views/js/index.js');
@@ -25,69 +33,115 @@ app.get('/main.css', function(req, res, next) {
   res.sendfile('./views/css/main.css');
 });
 
-app.get('/:key?', function(req, res, next) {
+app.get('/', function(req, res, next) {
+  res.sendfile('./views/index.html');
+  searchTerm = 'Batman';
+  selectedPage = 1;
+});
+
+app.get('/s=:key?', function(req, res, next) {
   var key = req.params.key;
   res.sendfile('./views/index.html');
   if (!key) {
     key = 'Batman';
   }
   searchTerm = key;
-  selectedPage = 1;
-  search(searchTerm, selectedPage);
 });
 
 io.on('connection', function(socket) {
-  console.log('a user connected ');
-
-  if(searchTerm) {
-    io.emit('updateSearchTerm', searchTerm);
-  }
-
-  if(searchResults) {
-    publishSearchResults(searchResults);
-  }
-
-  if(pages) {
-    publishPagination();
-  }
+  user = findOrCreateUser(socket);
+  searchWith(user)
 
   socket.on('disconnect', function() {
-    console.log('a user disconnected');
+    var user = "";
+    for(var i=0;i<users.length;i++) {
+      if(socket.handshake.address == users[i].ip) {
+        user = users[i];
+        break;
+      }
+    }
+    console.log(user.ip + ' disconnected');
   });
 
   socket.on('updatePage', function(page) {
-    if(page == 'Next') {
-      selectedPage++;
-    } else {
-      if(page == 'Prev') {
-        selectedPage--;
-      } else {
-        selectedPage = page;
-      }
-    }
-    search(searchTerm, selectedPage);
+    var user = getUserForSocket(socket);
+    user.selectedPage = page;
+    updateUserInUsers(user);
+    searchWith(user);
   });
 });
 
-function search(searchTerm, selectedPage) {
-  apiHelper.search(searchTerm, selectedPage, function(json) {
-      pages = Math.ceil(Number(json.totalResults)/10);
-      searchResults = json.Search;
-      publishSearchTerm();
-      publishSearchResults();
-      publishPagination();
+function findOrCreateUser(socket) {
+  var user = getUserForSocket(socket);
+  if(user == "") {
+    user = new User.create();
+    user.socket = socket;
+    if(!searchTerm) {
+      searchTerm = 'Batman';
+    }
+    user.searchTerm = searchTerm;
+    user.pages = 1;
+    user.selectedPage = 1;
+    user.searchResults = [];
+    user.ip = socket.handshake.address;
+    users.push(user);
+    console.log(user.ip + ' connected');
+  } else {
+    user.searchTerm = searchTerm;
+    user.socket = socket;
+    user.pages = 1;
+    user.selectedPage = 1;
+    updateUserInUsers(user);
+    console.log(user.ip + ' reconnected');
+  }
+  return user;
+}
+
+function getUserForSocket(socket) {
+  for(var i=0;i<users.length;i++) {
+    if(socket.handshake.address == users[i].ip) {
+      return users[i];
+    }
+  }
+  return "";
+}
+
+function updateUserInUsers(user) {
+  var index = -1;
+  for(var i=0;i<users.length;i++) {
+    if(user.ip == users[i].ip) {
+      index = i;
+      break;
+    }
+  }
+  if(index > -1) {
+    users.splice(index, 1);
+    users.push(user);
+  }
+}
+
+function searchWith(user) {
+  apiHelper.search(user, function(json) {
+      user.pages = Math.ceil(Number(json.totalResults)/10);
+      user.searchResults = json.Search;
+      updateUserInUsers(user)
+      if(user) {
+        publishSearchTerm(user);
+        publishSearchResults(user);
+        publishPagination(user);
+      }
     });
 }
 
-function publishSearchTerm() {
-   io.emit('updateSearchTerm', searchTerm);
+function publishSearchTerm(user) {
+  io.to(user.socket.id).emit('updateSearchTerm', user.searchTerm);
 }
 
-function publishSearchResults() {
-  io.emit('updateResults', searchResults);
+function publishSearchResults(user) {
+  io.to(user.socket.id).emit('updateResults', user.searchResults);
 }
 
-function publishPagination() {
-  io.emit('updatePagination', { numberOfPages : pages,
-              currentPage : selectedPage});
+function publishPagination(user) {
+  io.to(user.socket.id).emit('updatePagination', { numberOfPages : user.pages,
+        currentPage : user.selectedPage});
 }
