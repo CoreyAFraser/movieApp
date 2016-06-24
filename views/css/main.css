@@ -28,7 +28,6 @@ html, body {
 	color: red;
 	font-weight: bold;
 	font-size: 2.2em;
-	max-height: 14%;
 }
 
 #searchTerm > div { 
@@ -144,6 +143,10 @@ html, body {
 @media screen and (min-width: 768px) {
 	html, body {
 		font-size: 1.5em;
+	}
+
+	.page-title {
+		max-height: 14%;
 	}
 
 	#subTitle {
