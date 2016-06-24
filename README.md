@@ -10,4 +10,7 @@ After the dependencies are installed, npm run-script run will start the applicat
 ## Usage
 After running npm start, the website will be available at localhost:4444.
 If you wish to search for movies other than Batman movies, you can, but who really wants to do that?
-If you insist, you can do so by passing a url parameter s={search term}, ex: localhost:4444/?s=Batman
+If you insist, you can do so by passing a url parameter s={search term}, ex: localhost:4444/s=Batman
+
+## Note
+Since IMDB blocks some of its images from being embedded in other sites, this app will download the poster images and store them where ever the nodeJs server is running.

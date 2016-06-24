@@ -1,22 +1,22 @@
 html, body {
 	height: 100%;
-	font-size: 1.5em;
 }
 
 #title {
-	height: 12%;
+	height: 14%;
 }
 
 #subTitle {
-	padding-top: 3%;
+	padding-top: 0;
 	height: 6%;
 }
 
 #results {
-	height: 79%;
-	border-top: solid;
-	border-color: #ddd;
-	padding-top: 1%;
+	height: 74%;
+    border-top: solid;
+    border-bottom: solid;
+    border-color: #ddd;
+    margin-top: 1%;
 }
 
 #pagination {
@@ -28,6 +28,7 @@ html, body {
 	color: red;
 	font-weight: bold;
 	font-size: 2.2em;
+	max-height: 14%;
 }
 
 #searchTerm > div { 
@@ -39,8 +40,6 @@ html, body {
 }
 
 .pagesLinks {
-	border-top: solid;
-	border-color: #ddd;
 	margin-top: 1%;
 }
 
@@ -55,10 +54,11 @@ html, body {
 
 #results > div {
 	height: 100%;
+	overflow-y:auto
 }
 
 .movieContainer {
-	height: 19%;
+	height: 40%;
 	padding: 0;
 	margin: 1% 0;
 }
@@ -79,26 +79,20 @@ html, body {
 .movieTitleYear {
 	height: 75%;
 	padding: 0;
-	line-height: 1em;
 }
 
 .movieTitle {
-	height: 3em;
-	line-height: 1em;
+	font-size: 1.7em;
+	height: 2.3em;
+	line-height: 1.1em;
 	padding-right: 0;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-@media (min-width: 992px) { 
-	.movieTitle {
-		height: 2em;
-	}
-}
-
 .movieYear {
-	font-size: .75em;
-	height: .75em;
+	font-size: 1.3em;
+	height: 25%;
 	padding-right: 0;
 }
 
@@ -109,7 +103,7 @@ html, body {
 
 .movieRating .glyphicon-star, .movieRating .glyphicon-star-empty {
 	height: 100%;
-	font-size: 1.1em;
+	font-size: 3em;
 }
 
 .movieRating .glyphicon-star {
@@ -119,4 +113,52 @@ html, body {
 .moviePosterImg {
 	max-height: 100%;
 	max-width: 100%;
+	margin-left: auto;
+	display: block;
+}
+
+#loadingSpinner {
+	position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #b2b2b2;
+    opacity: 0.6;
+    z-index: 2;
+    padding-left: 0%
+    padding-right: 0;
+    white-space: normal;
+    border: grey;
+    border-style: groove;
+}
+
+#loadingSpinner img {
+	display: inherit;
+	margin: auto;
+	margin-top: 20%;
+	height: 20%;
+}
+
+@media screen and (min-width: 768px) {
+	html, body {
+		font-size: 1.5em;
+	}
+
+	#subTitle {
+		padding-top: 3%;
+	}
+
+	.movieTitle {
+		font-size: 1em;
+	}
+
+	.movieYear {
+		font-size: .7em;
+	}
+
+	.movieRating .glyphicon-star, .movieRating .glyphicon-star-empty {
+		font-size: 1em;
+	}
 }

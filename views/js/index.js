@@ -13,6 +13,7 @@ var getRatingById = function(movieId) {
 window.onpopstate = function(event) {
   if(event.state) {
   	page = event.state.page;
+    $("#loadingSpinner").css('display','block');
   	socket.emit("updatePage", event.state.page);
   }
 };
@@ -80,10 +81,14 @@ var MovieResults = React.createClass({
   getInitialState: function() {
     return {movies : []};
   },
+  componentDidUpdate() {
+    ReactDOM.findDOMNode(this).scrollTop = 0;
+  },
   componentDidMount: function() {
-      socket.on('updateResults', this.updateResults);
+    socket.on('updateResults', this.updateResults);
   },
   updateResults: function(results) {
+    $("#loadingSpinner").css('display','none');
     this.setState({movies : results});
   },
   render: function() {
@@ -93,8 +98,11 @@ var MovieResults = React.createClass({
     	var movie = this.state.movies[i];
       var rating = getRatingById(movie.imdbID);
       movieNodes.push(
-      	<div className='col-xs-6 col-md-4 movieContainer' key={movie.imdbID}>
+      	<div className='col-xs-12 col-md-4 movieContainer' key={movie.imdbID}>
       		<div className='row movieNode'>
+            <div className='col-xs-4 moviePoster'>
+              <img className='moviePosterImg' src={movie.Poster}/>
+            </div>
       			<div className='col-xs-8 movieInfo'>
       				<div className='col-xs-12 movieTitleYear'>
       					<div className='col-xs-12 movieTitle'>
@@ -107,9 +115,6 @@ var MovieResults = React.createClass({
       				<div className='col-xs-12 movieRating'>
       					<MovieStarRating rating={rating} movieId={movie.imdbID}/>
       				</div>
-      			</div>
-      			<div className='col-xs-4 moviePoster'>
-      				<img className='moviePosterImg' src={movie.Poster}/>
       			</div>
       		</div>
       	</div>);
@@ -142,6 +147,7 @@ var Pagination = React.createClass({
   },
   pageClickHandler: function(e) {
   	if($(e.target).hasClass('pageLink')) {
+      $("#loadingSpinner").css('display','block');
   		var clickedPage = $(e.target).attr('id');
   		if(clickedPage == 'Prev') {
 		    page--;

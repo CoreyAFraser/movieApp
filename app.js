@@ -23,8 +23,8 @@ app.get('/posters/:poster?', function(req, res, next) {
   res.sendfile('./posters/' + req.params.poster);
 });
 
-app.get('/views/images/posterNotFound.jpg', function(req, res, next) {
-  res.sendfile('./views/images/posterNotFound.jpg');
+app.get('/img/loading.gif', function(req, res, next) {
+  res.sendfile('./views/images/loading.gif');
 });
 
 
@@ -48,6 +48,7 @@ app.get('/s=:key?', function(req, res, next) {
     key = 'Batman';
   }
   searchTerm = key;
+  console.log(searchTerm);
 });
 
 io.on('connection', function(socket) {
