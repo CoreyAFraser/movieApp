@@ -1,6 +1,0 @@
-{
-	"mongoDb": {
-		"url" : "mongodb//localhost:27017/movieDatabase",
-		"name" : "movieDatabase"
-	}
-}

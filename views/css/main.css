@@ -83,15 +83,22 @@ html, body {
 }
 
 .movieTitle {
-	height: 2em;
+	height: 3em;
 	line-height: 1em;
 	padding-right: 0;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+@media (min-width: 992px) { 
+	.movieTitle {
+		height: 2em;
+	}
+}
+
 .movieYear {
-	height: 1em;
+	font-size: .75em;
+	height: .75em;
 	padding-right: 0;
 }
 
@@ -100,8 +107,12 @@ html, body {
 	color: grey;
 }
 
-.movieRating .glyphicon-star{
-	height: 1em;
+.movieRating .glyphicon-star, .movieRating .glyphicon-star-empty {
+	height: 100%;
+	font-size: 1.1em;
+}
+
+.movieRating .glyphicon-star {
 	color: gold;
 }
 

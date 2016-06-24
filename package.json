@@ -12,7 +12,6 @@
   "dependencies": {
     "express": "latest",
     "helmet": "^2.1.1",
-    "mongodb": "^2.1.18",
     "request": "latest",
     "socket.io": "latest"
   }

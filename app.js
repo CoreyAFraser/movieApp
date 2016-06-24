@@ -4,7 +4,7 @@ var server    = require('http').Server(app);
 var io        = require('socket.io')(server);
 var apiHelper = require('./helpers/apiHelper');
 var User      = require('./objects/user');
-var helmet = require('helmet');
+var helmet    = require('helmet');
 //=========================================Require Dependencies
 
 var searchTerm;
@@ -24,7 +24,7 @@ app.get('/posters/:poster?', function(req, res, next) {
 });
 
 app.get('/views/images/posterNotFound.jpg', function(req, res, next) {
-  res.sendfile('./views/posterNotFound.jpg');
+  res.sendfile('./views/images/posterNotFound.jpg');
 });
 
 
@@ -72,12 +72,6 @@ io.on('connection', function(socket) {
     updateUserInUsers(user);
     searchWith(user);
   });
-
-  socket.on("updateRating", function(data) {
-
-    // { newRating : clickedRating,
-    //                                   imdbId : movieId });
-  }
 });
 
 function findOrCreateUser(socket) {
@@ -135,22 +129,14 @@ function searchWith(user) {
       user.searchResults = json.Search;
       updateUserInUsers(user)
       if(user) {
-        publishSearchTerm(user);
-        publishSearchResults(user);
-        publishPagination(user);
+        updateUIFor(user);
       }
     });
 }
 
-function publishSearchTerm(user) {
+function updateUIFor(user) {
   io.to(user.socket.id).emit('updateSearchTerm', user.searchTerm);
-}
-
-function publishSearchResults(user) {
   io.to(user.socket.id).emit('updateResults', user.searchResults);
-}
-
-function publishPagination(user) {
   io.to(user.socket.id).emit('updatePagination', { numberOfPages : user.pages,
         currentPage : user.selectedPage});
 }
