@@ -41,16 +41,16 @@ module.exports = {
 	  		if(poster != 'N/A') {
 		 		poster = poster.substring(0, poster.length - 7) + ".jpg";
 		 		searchResults[movie].Poster = './posters/' + searchResults[movie].imdbID + ".jpg";
-		  // 		try {
-				//     fs.accessSync(searchResults[movie].Poster, fs.F_OK);
-				//     ifDoneDownloadingImagesReturnResults(callback);
-				// } catch (e) {
-				//     imageDownloader.downloadPoster(poster, searchResults[movie].Poster, function() {
-				//  		ifDoneDownloadingImagesReturnResults(callback);
-				//   	});
-				// }	  			
+		  		try {
+				    fs.accessSync(searchResults[movie].Poster, fs.F_OK);
+				    ifDoneDownloadingImagesReturnResults(callback);
+				} catch (e) {
+				    imageDownloader.downloadPoster(poster, searchResults[movie].Poster, function() {
+				 		ifDoneDownloadingImagesReturnResults(callback);
+				  	});
+				}	  			
 		  	} else {
-		  		searchResults[movie].Poster = './views/images/posterNotFound.jpg';
+		  		searchResults[movie].Poster = './posters/posterNotFound.jpg';
 		  		ifDoneDownloadingImagesReturnResults(callback);
 		  	}
   		}		
