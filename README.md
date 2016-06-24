@@ -5,7 +5,7 @@ This is a single page website powered by NodeJs, Express, Socket.io, and ReactJS
 ## Installation
 In order to run this project, you will need to install NodeJS and NPM.
 After these are installed, you will need run npm install because the node modules are not included in the repo.
-After the dependencies are installed, npm start will start the application and it runs on localhost on port 4444.
+After the dependencies are installed, npm run-script run will start the application and it runs on localhost on port 4444.
 
 ## Usage
 After running npm start, the website will be available at localhost:4444.

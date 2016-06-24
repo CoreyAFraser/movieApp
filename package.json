@@ -5,7 +5,8 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "nodemon ./app"
+    "run": "nodemon ./app",
+    "start": "node --use_strict app.js",
   },
   "author": "Corey Fraser",
   "license": "ISC",
