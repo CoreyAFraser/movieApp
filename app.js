@@ -39,7 +39,6 @@ app.get('/main.css', function(req, res, next) {
 app.get('/', function(req, res, next) {
   res.sendfile('./views/index.html');
   searchTerm = 'Batman';
-  selectedPage = 1;
 });
 
 app.get('/s=:key?', function(req, res, next) {
@@ -52,7 +51,7 @@ app.get('/s=:key?', function(req, res, next) {
 });
 
 io.on('connection', function(socket) {
-  user = findOrCreateUser(socket);
+  var user = findOrCreateUser(socket);
   searchWith(user)
 
   socket.on('disconnect', function() {
