@@ -109,7 +109,7 @@ var MovieResults = React.createClass({
       				</div>
       			</div>
       			<div className='col-xs-4 moviePoster'>
-      				<img className='moviePosterImg' src={movie.Poster} alt={movie.Title}/>
+      				<img className='moviePosterImg' src={movie.Poster}/>
       			</div>
       		</div>
       	</div>);
